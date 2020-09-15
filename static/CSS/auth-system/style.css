@@ -1,0 +1,29 @@
+.body-page {
+    width: 100%;
+    font-family: gbold;
+    text-align: center;
+}
+
+@media only screen and (min-width: 200px) and (max-width: 790px), (max-height: 850px) {
+
+}
+
+@media only screen and (min-width: 790px) and (min-height: 850px) {
+
+}
+
+a {
+    text-decoration: underline;
+    color: #29b6f6;
+    cursor: pointer;
+}
+
+#swiper-container {
+    display: none;
+}
+
+.panel {
+    flex-direction: column;
+    font-family: gbold;
+    margin-top: 30px;
+}

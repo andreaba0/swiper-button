@@ -1,0 +1,76 @@
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: google-bold;
+    scrollbar-width: none;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (min-width: 200px) and (max-width: 790px), (max-height: 850px) {
+    
+}
+
+@media only screen and (min-width: 790px) and (min-height: 850px) {
+
+}
+
+.swiper, .swiper-button {
+    font-family: gbold;
+    height: 120px;
+    user-select: none;
+    line-height: 1;
+}
+
+.swiper-box {
+    width: 100vw;
+    height: 120px;
+    position: fixed;
+    z-index: 15;
+    left: 0;
+    bottom: 0;
+}
+
+.swiper {
+    width: 100%;
+    background: #177cd6;
+    max-width: 500px;
+    font-size: 15px;
+    position: relative;
+    color: rgba(255, 255, 255, 0.6);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.swiper-button {
+    width: 90px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-sizing: border-box;
+    padding-right: 15px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 6;
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+}
+
+.swiper-button span {
+    font-size: 36px;
+}
+
+.swiper-info {
+    line-height: 1;
+}
