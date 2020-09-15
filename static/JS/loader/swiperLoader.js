@@ -12,17 +12,17 @@ var swiperLoader = (function () {
             delta: 60,
             defaultWidth: 90,
             onComplete: this.onComplete,
-            swiperContainerID: "swiper-container"
+            swiperContainerID: "swiper-container",
+            onChange: onSwiperStateChange
         };
     }
 
-    function showState() {
-
+    function onSwiperStateChange(percent, time) {
+        console.log('Status: '+ percent+'% and time: '+time);
     }
 
     return {
         onComplete: onComplete,
-        swipeBar: setup,
-        showState: showState
+        swipeBar: setup
     };
 })();

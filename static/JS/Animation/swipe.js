@@ -7,30 +7,37 @@ var swiper = (function () {
     var defPoint = document.getElementById(swipeBar.idParent).getBoundingClientRect().left;
     var textBlinkClk;
     var isEnabled;
-    enabled(false);
+    enabled(true);
 
-    function fingerIsMoving(pos) {
-        if (isSwiping) currentX = pos;
-        if (pos > defPoint + swipeBar.defaultWidth && (x >= defPoint && x <= defPoint + swipeBar.defaultWidth) && isSwiping)
-            document.getElementById(swipeBar.idButton).style.width = (pos - defPoint) + "px";
-        changePaddingSwiperText();
+    var getSwipeBarContainerWidth = () => document.getElementById(swipeBar.idParent).offsetWidth;
+    var getSwiperBarWidth = () => document.getElementById(swipeBar.idButton).offsetWidth;
+    var getSwiperBarWidthInPercentage = (fingerPos) => (fingerPos - defPoint) / getSwipeBarContainerWidth() * 100;
+
+    function changeSwiperBarButtonWidth(newWidth) {
+        document.getElementById(swipeBar.idButton).style.width = `${newWidth}px`;
     }
 
-    function touchStart(pos) {
-        currentX = 0;
-        isSwiping = true;
-        x = pos;
+    function changeSwiperBarContainerTextLeftPadding(newPaddingLeft) {
+        document.getElementById(swipeBar.idTextSwiper).style.paddingLeft = `${newPaddingLeft}px`;
     }
 
-    window.addEventListener("load", () => {
-        defPoint = document.getElementById(swipeBar.idParent).getBoundingClientRect().left;
-        isSwiping = false;
-    })
+    function isSwiperBarButtonTouched(pos) {
+        if (pos > defPoint + swipeBar.defaultWidth && (x >= defPoint && x <= defPoint + swipeBar.defaultWidth) && isSwiping) return true;
+        return false;
+    }
 
-    window.addEventListener("resize", () => {
+    function swipeIsFinished() {
+        if (currentX - defPoint >= getSwipeBarContainerWidth() - delta) return true;
+        return false;
+    }
+
+    function onLoadOrOnResize() {
         defPoint = document.getElementById(swipeBar.idParent).getBoundingClientRect().left;
         isSwiping = false;
-    })
+    }
+
+    window.addEventListener("load", () => onLoadOrOnResize())
+    window.addEventListener("resize", () => onLoadOrOnResize())
 
     document.getElementById(swipeBar.idParent).addEventListener("touchstart", (e) => touchStart(e.touches[0].clientX))
     document.getElementById(swipeBar.idParent).addEventListener("mousedown", (e) => touchStart(e.clientX))
@@ -42,38 +49,58 @@ var swiper = (function () {
     document.getElementById(swipeBar.idParent).addEventListener("mouseup", endSwiping)
     document.getElementById(swipeBar.idParent).addEventListener("mouseleave", () => { if (isSwiping) endSwiping() })
 
+    function fingerIsMoving(pos) {
+        if (!isSwiping) return;
+        if (isSwiperBarButtonTouched(pos)) changeSwiperBarButtonWidth(pos - defPoint)
+        currentX = pos;
+        changePaddingSwiperText();
+        swipeBar.onChange(getSwiperBarWidthInPercentage(), new Date().getTime());
+    }
+
+    function touchStart(pos) {
+        currentX = 0;
+        isSwiping = true;
+        x = pos;
+    }
+
     function endSwiping() {
         var complete = false;
-        if (currentX - defPoint >= document.getElementById(swipeBar.idParent).offsetWidth - delta) {
-            complete = true;
-        }
-        if (complete == true) {
-            document.getElementById(swipeBar.idButton).style.width = "100%";
-            manageBlink(false);
-            swipeBar.onComplete();
-        } else {
-            document.getElementById(swipeBar.idButton).style.width = swipeBar.defaultWidth + "px";
-            document.getElementById(swipeBar.idTextSwiper).style.paddingLeft = `0px`;
-        }
+        if (swipeIsFinished()) successfullComplete();
+        else swipeFailed();
         isSwiping = false;
+    }
+
+    function successfullComplete() {
+        document.getElementById(swipeBar.idButton).style.width = "100%";
+        manageBlink(false);
+        swipeBar.onComplete();
+    }
+
+    function swipeFailed() {
+        changeSwiperBarButtonWidth(swipeBar.defaultWidth)
+        changeSwiperBarContainerTextLeftPadding(0);
     }
 
     function enabled(state) {
         isEnabled = state;
-        if (state) document.getElementById(swipeBar.swiperContainerID).style.display = "flex";
-        else document.getElementById(swipeBar.swiperContainerID).style.display = "none";
+        if (state) showHideSwiperBar('flex');
+        else showHideSwiperBar('none');
         if (isEnabled) manageBlink();
         else clearInterval(textBlinkClk);
+    }
+
+    function showHideSwiperBar(display) {
+        document.getElementById(swipeBar.swiperContainerID).style.display = `${display}`;
     }
 
     function changeRGBSwiperText(opacity) {
         document.getElementById(swipeBar.idParent).style.color = `rgba(255, 255, 255, ${opacity})`;
     }
 
-    function manageBlink(status=true) {
+    function manageBlink(status = true) {
         opacity = 0;
         var deltaT;
-        if(!status) {
+        if (!status) {
             clearInterval(textBlinkClk);
             return;
         }
@@ -82,18 +109,17 @@ var swiper = (function () {
             if (opacity >= 1) deltaT = -0.05;
             if (opacity <= 0) deltaT = 0.05;
             opacity = opacity + deltaT;
-        }, 50)
+        }, 50);
     }
 
     function changePaddingSwiperText() {
-        var temp = document.getElementById(swipeBar.idButton).offsetWidth;
-        document.getElementById(swipeBar.idTextSwiper).style.paddingLeft = `${temp - swipeBar.defaultWidth+(temp*-0.1)}px`;
+        var temp = getSwiperBarWidth();
+        changeSwiperBarContainerTextLeftPadding(temp - swipeBar.defaultWidth + (temp * -0.1));
     }
 
 
 
     return {
         enabled: enabled
-
     }
 })()
