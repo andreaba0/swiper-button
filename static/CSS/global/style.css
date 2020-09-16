@@ -73,4 +73,6 @@ body {
 
 .swiper-info {
     line-height: 1;
+    min-width: 180px;
+    text-align: center;
 }

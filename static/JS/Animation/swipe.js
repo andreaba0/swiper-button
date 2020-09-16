@@ -7,22 +7,39 @@ var swiper = (function () {
     var defPoint = document.getElementById(swipeBar.idParent).getBoundingClientRect().left;
     var textBlinkClk;
     var isEnabled;
+
+    var getSwipeBarContainerWidth = () => getElement(swipeBar.idParent).offsetWidth;
+    var getSwiperBarWidth = () => getElement(swipeBar.idButton).offsetWidth;
+    var getSwiperBarWidthInPercentage = (fingerPos) => parseInt((fingerPos - defPoint) / getSwipeBarContainerWidth() * 100);
+    var getElement = (id) => document.getElementById(id);
+
+    window.addEventListener("load", () => onLoadOrOnResize())
+    window.addEventListener("resize", () => onLoadOrOnResize())
+    getElement(swipeBar.idParent).addEventListener("touchstart", (e) => touchStart(e.touches[0].clientX))
+    getElement(swipeBar.idParent).addEventListener("mousedown", (e) => touchStart(e.clientX))
+    getElement(swipeBar.idParent).addEventListener("touchmove", (e) => fingerIsMoving(e.touches[0].clientX))
+    getElement(swipeBar.idParent).addEventListener("mousemove", (e) => fingerIsMoving(e.clientX))
+    getElement(swipeBar.idParent).addEventListener("touchend", endSwiping)
+    getElement(swipeBar.idParent).addEventListener("mouseup", endSwiping)
+    getElement(swipeBar.idParent).addEventListener("mouseleave", () => { if (isSwiping) endSwiping() })
+
     enabled(true);
-
-    var getSwipeBarContainerWidth = () => document.getElementById(swipeBar.idParent).offsetWidth;
-    var getSwiperBarWidth = () => document.getElementById(swipeBar.idButton).offsetWidth;
-    var getSwiperBarWidthInPercentage = (fingerPos) => (fingerPos - defPoint) / getSwipeBarContainerWidth() * 100;
-
     function changeSwiperBarButtonWidth(newWidth) {
-        document.getElementById(swipeBar.idButton).style.width = `${newWidth}px`;
+        if (getSwiperBarWidth() <= getSwipeBarContainerWidth()) getElement(swipeBar.idButton).style.width = `${newWidth}px`;
+    }
+
+    function isFingerInCorrectStartPos(pos) {
+        if (pos > defPoint + swipeBar.defaultWidth) return true;
+        return false;
     }
 
     function changeSwiperBarContainerTextLeftPadding(newPaddingLeft) {
-        document.getElementById(swipeBar.idTextSwiper).style.paddingLeft = `${newPaddingLeft}px`;
+        getElement(swipeBar.idTextSwiper).style.paddingLeft = `${newPaddingLeft}px`;
     }
 
     function isSwiperBarButtonTouched(pos) {
-        if (pos > defPoint + swipeBar.defaultWidth && (x >= defPoint && x <= defPoint + swipeBar.defaultWidth) && isSwiping) return true;
+        if (!isFingerInCorrectStartPos(pos)) return false;
+        if (x >= defPoint && x <= defPoint + swipeBar.defaultWidth) return true;
         return false;
     }
 
@@ -32,29 +49,20 @@ var swiper = (function () {
     }
 
     function onLoadOrOnResize() {
-        defPoint = document.getElementById(swipeBar.idParent).getBoundingClientRect().left;
+        defPoint = getElement(swipeBar.idParent).getBoundingClientRect().left;
         isSwiping = false;
     }
-
-    window.addEventListener("load", () => onLoadOrOnResize())
-    window.addEventListener("resize", () => onLoadOrOnResize())
-
-    document.getElementById(swipeBar.idParent).addEventListener("touchstart", (e) => touchStart(e.touches[0].clientX))
-    document.getElementById(swipeBar.idParent).addEventListener("mousedown", (e) => touchStart(e.clientX))
-    document.getElementById(swipeBar.idParent).addEventListener("touchmove", (e) => fingerIsMoving(e.touches[0].clientX))
-    document.getElementById(swipeBar.idParent).addEventListener("mousemove", (e) => fingerIsMoving(e.clientX))
-
-
-    document.getElementById(swipeBar.idParent).addEventListener("touchend", endSwiping)
-    document.getElementById(swipeBar.idParent).addEventListener("mouseup", endSwiping)
-    document.getElementById(swipeBar.idParent).addEventListener("mouseleave", () => { if (isSwiping) endSwiping() })
 
     function fingerIsMoving(pos) {
         if (!isSwiping) return;
         if (isSwiperBarButtonTouched(pos)) changeSwiperBarButtonWidth(pos - defPoint)
         currentX = pos;
         changePaddingSwiperText();
-        swipeBar.onChange(getSwiperBarWidthInPercentage(), new Date().getTime());
+        swipeBar.onChange(getSwiperBarWidthInPercentage(pos), new Date().getTime());
+    }
+
+    function changeSwiperBarContainerOpacity(opacity) {
+        //TODO: change text swiper div opacity in function of swiper percentage
     }
 
     function touchStart(pos) {
@@ -64,14 +72,13 @@ var swiper = (function () {
     }
 
     function endSwiping() {
-        var complete = false;
         if (swipeIsFinished()) successfullComplete();
         else swipeFailed();
         isSwiping = false;
     }
 
     function successfullComplete() {
-        document.getElementById(swipeBar.idButton).style.width = "100%";
+        getElement(swipeBar.idButton).style.width = "100%";
         manageBlink(false);
         swipeBar.onComplete();
     }
@@ -90,11 +97,11 @@ var swiper = (function () {
     }
 
     function showHideSwiperBar(display) {
-        document.getElementById(swipeBar.swiperContainerID).style.display = `${display}`;
+        getElement(swipeBar.swiperContainerID).style.display = `${display}`;
     }
 
     function changeRGBSwiperText(opacity) {
-        document.getElementById(swipeBar.idParent).style.color = `rgba(255, 255, 255, ${opacity})`;
+        getElement(swipeBar.idParent).style.color = `rgba(255, 255, 255, ${opacity})`;
     }
 
     function manageBlink(status = true) {
@@ -114,7 +121,9 @@ var swiper = (function () {
 
     function changePaddingSwiperText() {
         var temp = getSwiperBarWidth();
-        changeSwiperBarContainerTextLeftPadding(temp - swipeBar.defaultWidth + (temp * -0.1));
+        //changeSwiperBarContainerTextLeftPadding(temp - swipeBar.defaultWidth + (temp * -0.1));
+        changeSwiperBarContainerTextLeftPadding(Math.pow(1.0230, temp - swipeBar.defaultWidth));
+        console.log(Math.pow(1.025, temp - swipeBar.defaultWidth));
     }
 
 
