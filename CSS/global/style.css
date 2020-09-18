@@ -1,0 +1,30 @@
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: google-bold;
+    scrollbar-width: none;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+a {
+    text-decoration: underline;
+    color: #29b6f6;
+    cursor: pointer;
+}
+
+@media only screen and (min-width: 200px) and (max-width: 790px), (max-height: 850px) {
+    
+}
+
+@media only screen and (min-width: 790px) and (min-height: 850px) {
+
+}
