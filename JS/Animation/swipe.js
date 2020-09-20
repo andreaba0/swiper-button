@@ -1,4 +1,3 @@
-//Maximum call stack size exceeded on mobile devices
 var swiper = function (config) {
     var x;
     var currentX;
