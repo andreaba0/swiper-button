@@ -10,16 +10,19 @@
     display: none;
 }
 
+.swiper, .swiper-button, .swiper-box {
+    height: 60px;
+}
+
 .swiper, .swiper-button {
-    font-family: gbold;
-    height: 120px;
+    font-family: monospace;
+    font-weight: 800;
     user-select: none;
     line-height: 1;
 }
 
 .swiper-box {
     width: 100vw;
-    height: 120px;
     left: 0;
     bottom: 0;
 }
