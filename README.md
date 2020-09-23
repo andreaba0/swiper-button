@@ -65,7 +65,7 @@ if this property is set to true, the swipebar will be shown to the user. The def
 <br><br>
 
 ## Tips
-It is possible to add one or more swipe elements to a single page but remember to change the ids tag of each component.
+It is possible to add one or more swipe elements to a single page but remember to change the id tag of each component.
 <br>
 It is possible to create an array of components each of them with a specific function
 
