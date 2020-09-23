@@ -11,7 +11,7 @@ Follow this simple step to add the animation script to your project
     <script type="text/javascript" src="<your path>/swipe.js"></script>
     <link rel="stylesheet" type="text/css" href="<your path>/style.css" />
 ```
-2. Add the animation elements to the page body of your page or application
+2. Add the animation elements to the body of your page or application
 ```HTML
 <div id="swipe" class="swiper bg-blue">
     <div class="swiper-button">
@@ -25,7 +25,7 @@ Follow this simple step to add the animation script to your project
 3. Add animation using the javascript library added in step 1
 ```JAVASCRIPT
 swiper({
-    idParent: "swipe",
+    id: "swipe",
     delta: 60,
     onComplete: () => {
         //when the swipe is completed return true or false
