@@ -29,16 +29,18 @@ swiper({
     delta: 60,
     onComplete: () => {
         //when the swipe is completed return true or false
+        //In this function it is possible to make a requst to a server (e.g. for user authentication)
+        //and in case of success for the login attempt return true orherwise return false
         return true;
     },
     onChange: (percent, time) => {
-        //do something each time the user move the swipebar 
+        //do something each time the user move the swipebar
     },
     onSuccess: () => {
-        //if the sign process succeed do something
+        //if the sign process succeed
     },
     onFail: () => {
-        //if the sign process fail do something else
+        //if the sign process fail
     }
 });
 ```
@@ -57,7 +59,7 @@ if this property is set to true, when the user swipe to the end, the swiperbar w
 visible: false //default is true
 ```
 if this property is set to true, the swipebar will be shown to the user. The default CSS property hide the swipebar, but a specific Javascript function display it.
-<br>
+<br><br>
 
 ## Tips
 It is possible to add one or more swipe elements to a single page but remember to change the ids tag of each component.
@@ -74,10 +76,11 @@ It is also possible to show or hide a component.
 The best way is to associate the swipe component to a variable first.
 
 ```JAVASCRIPT
-swipeArray[0].visible(false); //to hide the component
+swipeArray[0].visible(false); //to hide the component. Otherwise write true.
 ```
 It is possible to reset the status of the swipebar by calling a specific function
 
 ```JAVASCRIPT
 swipeArray[0].reset(); //to reset the status of the component
 ```
+<br><br>
