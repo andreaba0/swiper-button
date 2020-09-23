@@ -8,17 +8,20 @@ This project has the goal to make possible to any developer to add a simple sign
 Follow this simple step to add the animation script to your project
 1. Add the script file and the CSS file in the "head" section of your page
 ```HTML
+    <!--This script can be found under the JS directory of this project-->
     <script type="text/javascript" src="<your path>/swipe.js"></script>
+
+    <!--This file can be found under the CSS directory of this project-->
     <link rel="stylesheet" type="text/css" href="<your path>/style.css" />
 ```
 2. Add the animation elements to the body of your page or application
 ```HTML
-<div id="swipe" class="swiper bg-blue">
+<div id="swipe" class="swiper">
     <div class="swiper-button">
         Swipe
     </div>
     <div class="swiper-info">
-        Scorri per continuare
+        Swipe to continue
     </div>
 </div>
 ```
@@ -84,3 +87,9 @@ It is possible to reset the status of the swipebar by calling a specific functio
 swipeArray[0].reset(); //to reset the status of the component
 ```
 <br><br>
+
+## Working example
+
+This project contain a working example.
+
+Watch the example by downloading this project and then open the html file
