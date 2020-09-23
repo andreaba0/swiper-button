@@ -1,10 +1,10 @@
-var swiper = async function (config) {
+var swiper = function (config) {
     var currentX;
     var delta = config.delta;
     var isSwiping = false;
     var defPoint;
 
-    var getconfigContainerWidth = () => getElement(config.idParent).offsetWidth;
+    var getconfigContainerWidth = () => getElement(config.id).offsetWidth;
     var getSwiperBarWidth = () => getElement(config.idButton).offsetWidth;
     var getSwiperBarWidthInPercentage = (fingerPos) => parseInt((fingerPos - defPoint) / getconfigContainerWidth() * 100);
     var getElement = (id) => document.getElementById(id);
@@ -12,18 +12,33 @@ var swiper = async function (config) {
     var calculateTextOpacity = (pos) => 1 - getSwiperBarWidthInPercentage(pos) / 100;
     var paddingFormula = () => Math.pow(1.0230, getSwiperBarWidth() - config.defaultWidth);
 
-    window.addEventListener("load", () => {
+    if(document.readyState === 'complete') {
+        init();
+    } else {
+        window.addEventListener("load", init);
+    }
+
+    function init() {
         window.addEventListener("resize", () => onLoadOrOnResize())
-        getElement(config.idParent).addEventListener("touchstart", touchStart, false)
-        getElement(config.idParent).addEventListener("mousedown", touchStart, false)
-        getElement(config.idParent).addEventListener("touchmove", fingerIsMoving, false)
-        getElement(config.idParent).addEventListener("mousemove", fingerIsMoving, false)
-        getElement(config.idParent).addEventListener("touchend", endSwiping, false)
-        getElement(config.idParent).addEventListener("mouseup", endSwiping, false)
-        getElement(config.idParent).addEventListener("mouseleave", () => { if (isSwiping) endSwiping() })
+        getElement(config.id).addEventListener("touchstart", touchStart, false)
+        getElement(config.id).addEventListener("mousedown", touchStart, false)
+        getElement(config.id).addEventListener("touchmove", fingerIsMoving, false)
+        getElement(config.id).addEventListener("mousemove", fingerIsMoving, false)
+        getElement(config.id).addEventListener("touchend", endSwiping, false)
+        getElement(config.id).addEventListener("mouseup", endSwiping, false)
+        getElement(config.id).addEventListener("mouseleave", () => { if (isSwiping) endSwiping() })
         onLoadOrOnResize();
-        enabled(true);
-    });
+        if(typeof config.onFailReset==="undefined") config.onFailReset=false;
+        if(typeof config.visible==="undefined") config.visible=true;
+        config.defaultWidth=parseInt(getComputedStyle(document.querySelector(".swiper-button")).width.slice(0, -2));
+        config.delta=parseInt(config.delta);
+        config.idButton=config.id+"-button";
+        config.idTextSwiper=config.id+"-text";
+        var childs = document.getElementById(config.id).children;
+        childs[0].id=config.idButton;
+        childs[1].id=config.idTextSwiper;
+        visible(config.visible);
+    }
 
     function touchStart(e) {
         e.stopPropagation();
@@ -52,6 +67,7 @@ var swiper = async function (config) {
         isSwiping = false;
         if (swipeIsFinished()) successfullComplete();
         else swipeFailed();
+        if(config.onFailReset==true) resetValue();
     }
 
     function onCorrectStartPos(pos) {
@@ -77,8 +93,8 @@ var swiper = async function (config) {
         return false;
     }
 
-    function changeSwiperBarButtonWidth(newWidth, unit, fromTheEnd=false) {
-        if (!swiperButtonReachMaxWidth()||fromTheEnd) setSwiperButtonWidth(newWidth, unit);
+    function changeSwiperBarButtonWidth(newWidth, unit, fromTheEnd = false) {
+        if (!swiperButtonReachMaxWidth() || fromTheEnd) setSwiperButtonWidth(newWidth, unit);
         else setSwiperButtonWidth("100", "%");
     }
 
@@ -111,7 +127,7 @@ var swiper = async function (config) {
     }
 
     function onLoadOrOnResize() {
-        defPoint = getElement(config.idParent).getBoundingClientRect().left;
+        defPoint = getElement(config.id).getBoundingClientRect().left;
         isSwiping = false;
     }
 
@@ -119,13 +135,18 @@ var swiper = async function (config) {
         getElStyle(config.idTextSwiper).opacity = `${opacity}`;
     }
 
-    function enabled(state) {
+    function visible(state) {
         if (state) showHideSwiperBar('flex');
         else showHideSwiperBar('none');
     }
 
+    function resetValue() {
+        isSwiping=false;
+        swipeFailed();
+    }
+
     function showHideSwiperBar(display) {
-        getElStyle(config.swiperContainerID).display = `${display}`;
+        getElStyle(config.id).display = `${display}`;
     }
 
     function changePaddingSwiperText() {
@@ -133,6 +154,7 @@ var swiper = async function (config) {
     }
 
     return {
-        enabled: enabled
+        visible: visible,
+        reset: resetValue
     }
 };

@@ -1,11 +1,8 @@
 (function () {
-    swiper({
-        idParent: "swipe1",
-        idButton: "button1",
-        idTextSwiper: "swiper-text1",
-        swiperContainerID: "swiper-container1",
+    var x = swiper({
+        id: "swipe1",
         delta: 60,
-        defaultWidth: 90,
+        onFailReset: true,
         onComplete: () => {
             return true;
         },
@@ -14,19 +11,17 @@
         },
         onSuccess: () => {
             alert("Success");
+            x.visible(false);
         },
         onFail: () => { }
     });
 })();
 
 (function () {
-    swiper({
-        idParent: "swipe2",
-        idButton: "button2",
-        idTextSwiper: "swiper-text2",
-        swiperContainerID: "swiper-container2",
+    var y = swiper({
+        id: "swipe2",
+        visible: true,
         delta: 60,
-        defaultWidth: 90,
         onComplete: () => {
             return false;
         },

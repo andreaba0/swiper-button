@@ -1,16 +1,4 @@
-@media only screen and (min-width: 200px) and (max-width: 790px), (max-height: 850px) {
-
-}
-
-@media only screen and (min-width: 790px) and (min-height: 850px) {
-
-}
-
-#swiper-container {
-    display: none;
-}
-
-.swiper, .swiper-button, .swiper-box {
+.swiper, .swiper-button {
     height: 60px;
 }
 
@@ -21,12 +9,6 @@
     line-height: 1;
 }
 
-.swiper-box {
-    width: 100vw;
-    left: 0;
-    bottom: 0;
-}
-
 .bg-blue {
     background: #177cd6;
 }
@@ -35,31 +17,35 @@
     background: #00e676;
 }
 
+.swiper, .swiper-button {
+    align-items: center;
+}
+
 .swiper {
     width: 100%;
     max-width: 500px;
     font-size: 15px;
     position: relative;
-    color: rgba(255, 255, 255, 0.6);
-    box-sizing: border-box;
+    justify-content: center;
     overflow: hidden;
+    color: #ffffff;
+    box-sizing: border-box;
+    display: none;
 }
 
 .swiper-button {
     width: 90px;
-    color: #ffffff;
     background: rgba(255, 255, 255, 0.3);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
     box-sizing: border-box;
     padding-right: 15px;
+    justify-content: flex-end;
     position: absolute;
     top: 0;
     left: 0;
     z-index: 6;
     backdrop-filter: blur(8px);
     cursor: pointer;
+    display: flex;
 }
 
 .swiper-button span {
@@ -70,4 +56,5 @@
     line-height: 1;
     min-width: 180px;
     text-align: center;
+    z-index: 3;
 }
