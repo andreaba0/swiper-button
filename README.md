@@ -32,7 +32,7 @@ swiper({
     delta: 60,
     onComplete: () => {
         //when the swipe is completed return true or false
-        //In this function it is possible to make a requst to a server (e.g. for user authentication)
+        //In this function it is possible to make a request to a server (e.g. for user authentication)
         //and in case of success for the login attempt return true orherwise return false
         return true;
     },
