@@ -17,7 +17,7 @@ Follow this simple step to add the animation script to your project
 2. Add the animation elements to the body of your page or application
 ```HTML
 <div id="swipe" class="swiper">
-    <div class="swiper-button">
+    <div class="swiper-button bg-blue">
         Swipe
     </div>
     <div class="swiper-info">
@@ -54,7 +54,7 @@ swiper({
 ```JAVASCRIPT
 onFailReset: true //default is false
 ```
-if this property is set to true, when the user swipe to the end, the swiperbar will be resetted after the onSuccess function.
+if this property is set to true, when the user swipe to the end, the swiperbar will be resetted after the onSuccess/onFail function.
 <br>
 
 2.
