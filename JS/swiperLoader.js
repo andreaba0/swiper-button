@@ -3,6 +3,12 @@
         id: "swipe1",
         delta: 60,
         onFailReset: true,
+        onValidate: () => {
+            return false;
+        },
+        onValidationFail: () => {
+            console.log("Validation failed");
+        },
         onComplete: () => {
             return true;
         },
@@ -22,6 +28,12 @@
         id: "swipe2",
         visible: true,
         delta: 60,
+        onValidate: () => {
+            return true;
+        },
+        onValidationFail: () => {
+
+        },
         onComplete: () => {
             return false;
         },

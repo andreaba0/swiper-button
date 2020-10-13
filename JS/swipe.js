@@ -4,19 +4,19 @@ var swiper = function (config) {
     var isSwiping = false;
     var defPoint;
 
-    var getconfigContainerWidth = () => getElement(config.id).offsetWidth;
-    var getSwiperBarWidth = () => getElement(config.idButton).offsetWidth;
-    var getSwiperBarWidthInPercentage = (fingerPos) => parseInt((fingerPos - defPoint) / getconfigContainerWidth() * 100);
-    var getElement = (id) => document.getElementById(id);
-    var getElStyle = (id) => getElement(id).style;
-    var calculateTextOpacity = (pos) => 1 - getSwiperBarWidthInPercentage(pos) / 100;
-    var paddingFormula = () => Math.pow(1.0230, getSwiperBarWidth() - config.defaultWidth);
-
-    if(document.readyState === 'complete') {
+    if (document.readyState === 'complete') {
         init();
     } else {
         window.addEventListener("load", init);
     }
+
+    var getconfigContainerWidth = () => getElement(config.id).offsetWidth;
+    var getSwiperBarWidth = () => getElement(config.idButton).offsetWidth;
+    var getSwiperBarWidthInPercentage = (fingerPos) => parseInt((fingerPos - defPoint - config.defaultWidth) / getconfigContainerWidth() * 100);
+    var getElement = (id) => document.getElementById(id);
+    var getElStyle = (id) => getElement(id).style;
+    var calculateTextOpacity = (pos) => 1 - getSwiperBarWidthInPercentage(pos) / 100;
+    var paddingFormula = () => Math.pow(1.0230, getSwiperBarWidth() - config.defaultWidth);
 
     function init() {
         window.addEventListener("resize", () => onLoadOrOnResize())
@@ -28,15 +28,15 @@ var swiper = function (config) {
         getElement(config.id).addEventListener("mouseup", endSwiping, false)
         getElement(config.id).addEventListener("mouseleave", () => { if (isSwiping) endSwiping() })
         onLoadOrOnResize();
-        if(typeof config.onFailReset==="undefined") config.onFailReset=false;
-        if(typeof config.visible==="undefined") config.visible=true;
-        config.defaultWidth=parseInt(getComputedStyle(document.querySelector(".swiper-button")).width.slice(0, -2));
-        config.delta=parseInt(config.delta);
-        config.idButton=config.id+"-button";
-        config.idTextSwiper=config.id+"-text";
+        if (typeof config.onFailReset === "undefined") config.onFailReset = false;
+        if (typeof config.visible === "undefined") config.visible = true;
+        config.defaultWidth = parseInt(getComputedStyle(document.querySelector(".swiper-button")).width.slice(0, -2));
+        config.delta = parseInt(config.delta);
+        config.idButton = config.id + "-button";
+        config.idTextSwiper = config.id + "-text";
         var childs = document.getElementById(config.id).children;
-        childs[0].id=config.idButton;
-        childs[1].id=config.idTextSwiper;
+        childs[0].id = config.idButton;
+        childs[1].id = config.idTextSwiper;
         visible(config.visible);
     }
 
@@ -55,6 +55,21 @@ var swiper = function (config) {
         var pos;
         if (e.type == 'mousemove') pos = e.clientX;
         else pos = e.touches[0].clientX;
+        if (getSwiperBarWidthInPercentage(pos) == 10) verifyValidation(pos);
+        else movingEventAction(pos);
+    }
+
+    function verifyValidation(param) {
+        if (config.onValidate()) movingEventAction(param);
+        else stopCurrentAnimation();
+    }
+
+    function stopCurrentAnimation() {
+        config.onValidationFail();
+        endSwiping();
+    }
+
+    function movingEventAction(pos) {
         if (swiperButtonCanChangeWidth(pos)) changeSwiperBarButtonWidth(pos - defPoint, "px");
         changeSwiperBarContainerOpacity(calculateTextOpacity(pos));
         currentX = pos;
@@ -67,7 +82,7 @@ var swiper = function (config) {
         isSwiping = false;
         if (swipeIsFinished()) successfullComplete();
         else swipeFailed();
-        if(config.onFailReset==true) resetValue();
+        if (config.onFailReset == true) resetValue();
     }
 
     function onCorrectStartPos(pos) {
@@ -141,7 +156,7 @@ var swiper = function (config) {
     }
 
     function resetValue() {
-        isSwiping=false;
+        isSwiping = false;
         swipeFailed();
     }
 
