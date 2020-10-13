@@ -12,7 +12,7 @@ var swiper = function (config) {
 
     var getconfigContainerWidth = () => getElement(config.id).offsetWidth;
     var getSwiperBarWidth = () => getElement(config.idButton).offsetWidth;
-    var getSwiperBarWidthInPercentage = (fingerPos) => parseInt((fingerPos - defPoint - config.defaultWidth) / getconfigContainerWidth() * 100);
+    var getSwiperBarWidthInPercentage = (fingerPos) => parseInt((fingerPos - defPoint - config.defaultWidth) / (getconfigContainerWidth()-config.defaultWidth) * 100);
     var getElement = (id) => document.getElementById(id);
     var getElStyle = (id) => getElement(id).style;
     var calculateTextOpacity = (pos) => 1 - getSwiperBarWidthInPercentage(pos) / 100;
@@ -74,7 +74,7 @@ var swiper = function (config) {
         changeSwiperBarContainerOpacity(calculateTextOpacity(pos));
         currentX = pos;
         changePaddingSwiperText();
-        config.onChange(getSwiperBarWidthInPercentage(pos), new Date().getTime());
+        config.onChange(calculatePercentage(pos), new Date().getTime());
     }
 
     function endSwiping() {
@@ -144,6 +144,13 @@ var swiper = function (config) {
     function onLoadOrOnResize() {
         defPoint = getElement(config.id).getBoundingClientRect().left;
         isSwiping = false;
+    }
+
+    function calculatePercentage(len) {
+        var perc = getSwiperBarWidthInPercentage(len);
+        if(perc<0) return 0;
+        if(perc>100) return 100;
+        return perc;
     }
 
     function changeSwiperBarContainerOpacity(opacity) {
