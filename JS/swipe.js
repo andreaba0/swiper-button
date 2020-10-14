@@ -3,6 +3,7 @@ var swiper = function (config) {
     var delta = config.delta;
     var isSwiping = false;
     var defPoint;
+    var formValidated = false;
 
     if (document.readyState === 'complete') {
         init();
@@ -12,22 +13,13 @@ var swiper = function (config) {
 
     var getconfigContainerWidth = () => getElement(config.id).offsetWidth;
     var getSwiperBarWidth = () => getElement(config.idButton).offsetWidth;
-    var getSwiperBarWidthInPercentage = (fingerPos) => parseInt((fingerPos - defPoint - config.defaultWidth) / (getconfigContainerWidth()-config.defaultWidth) * 100);
+    var getSwiperBarWidthInPercentage = (fingerPos) => parseInt((fingerPos - defPoint - config.defaultWidth) / (getconfigContainerWidth() - config.defaultWidth) * 100);
     var getElement = (id) => document.getElementById(id);
     var getElStyle = (id) => getElement(id).style;
     var calculateTextOpacity = (pos) => 1 - getSwiperBarWidthInPercentage(pos) / 100;
     var paddingFormula = () => Math.pow(1.0230, getSwiperBarWidth() - config.defaultWidth);
 
     function init() {
-        window.addEventListener("resize", () => onLoadOrOnResize())
-        getElement(config.id).addEventListener("touchstart", touchStart, false)
-        getElement(config.id).addEventListener("mousedown", touchStart, false)
-        getElement(config.id).addEventListener("touchmove", fingerIsMoving, false)
-        getElement(config.id).addEventListener("mousemove", fingerIsMoving, false)
-        getElement(config.id).addEventListener("touchend", endSwiping, false)
-        getElement(config.id).addEventListener("mouseup", endSwiping, false)
-        getElement(config.id).addEventListener("mouseleave", () => { if (isSwiping) endSwiping() })
-        onLoadOrOnResize();
         if (typeof config.onFailReset === "undefined") config.onFailReset = false;
         if (typeof config.visible === "undefined") config.visible = true;
         config.defaultWidth = parseInt(getComputedStyle(document.querySelector(".swiper-button")).width.slice(0, -2));
@@ -38,6 +30,15 @@ var swiper = function (config) {
         childs[0].id = config.idButton;
         childs[1].id = config.idTextSwiper;
         visible(config.visible);
+        window.addEventListener("resize", () => onLoadOrOnResize())
+        getElement(config.id).addEventListener("touchstart", touchStart, false)
+        getElement(config.id).addEventListener("mousedown", touchStart, false)
+        getElement(config.id).addEventListener("touchmove", fingerIsMoving, false)
+        getElement(config.id).addEventListener("mousemove", fingerIsMoving, false)
+        getElement(config.id).addEventListener("touchend", endSwiping, false)
+        getElement(config.id).addEventListener("mouseup", endSwiping, false)
+        getElement(config.id).addEventListener("mouseleave", () => { if (isSwiping) endSwiping() })
+        onLoadOrOnResize();
     }
 
     function touchStart(e) {
@@ -55,11 +56,12 @@ var swiper = function (config) {
         var pos;
         if (e.type == 'mousemove') pos = e.clientX;
         else pos = e.touches[0].clientX;
-        if (getSwiperBarWidthInPercentage(pos) == 10) verifyValidation(pos);
+        if (getSwiperBarWidthInPercentage(pos) >= 10 && !formValidated) verifyValidation(pos);
         else movingEventAction(pos);
     }
 
     function verifyValidation(param) {
+        formValidated = true;
         if (config.onValidate()) movingEventAction(param);
         else stopCurrentAnimation();
     }
@@ -79,7 +81,9 @@ var swiper = function (config) {
 
     function endSwiping() {
         if (!isSwiping) return;
+        console.log("olttt");
         isSwiping = false;
+        formValidated = false;
         if (swipeIsFinished()) successfullComplete();
         else swipeFailed();
         if (config.onFailReset == true) resetValue();
@@ -148,8 +152,8 @@ var swiper = function (config) {
 
     function calculatePercentage(len) {
         var perc = getSwiperBarWidthInPercentage(len);
-        if(perc<0) return 0;
-        if(perc>100) return 100;
+        if (perc < 0) return 0;
+        if (perc > 100) return 100;
         return perc;
     }
 
