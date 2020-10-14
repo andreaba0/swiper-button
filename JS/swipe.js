@@ -41,6 +41,11 @@ var swiper = function (config) {
         onLoadOrOnResize();
     }
 
+    function onLoadOrOnResize() {
+        defPoint = getElement(config.id).getBoundingClientRect().left;
+        isSwiping = false;
+    }
+
     function touchStart(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -81,7 +86,6 @@ var swiper = function (config) {
 
     function endSwiping() {
         if (!isSwiping) return;
-        console.log("olttt");
         isSwiping = false;
         formValidated = false;
         if (swipeIsFinished()) successfullComplete();
@@ -143,11 +147,6 @@ var swiper = function (config) {
     function swipeIsFinished() {
         if (currentX - defPoint >= getconfigContainerWidth() - delta) return true;
         return false;
-    }
-
-    function onLoadOrOnResize() {
-        defPoint = getElement(config.id).getBoundingClientRect().left;
-        isSwiping = false;
     }
 
     function calculatePercentage(len) {
